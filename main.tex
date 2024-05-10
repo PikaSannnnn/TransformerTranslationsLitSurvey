@@ -1,0 +1,86 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{natbib}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage[top=1in, bottom=1.5in, left=1in, right=1in]{geometry}
+\usepackage{indentfirst}
+
+\title{Project Proposal - CSE256}
+\author{Stephen Dong (A69026970)}
+\date{May 10, 2024}
+
+% For this assignment, you will choose an NLP task and select one paper that includes code
+% related to this task. Run the code and analyze and understand the limitations of the existing
+% system. For example, you might try to understand the errors made by a machine translation
+% model and what kinds of sentences it fails on. If you don’t speak a second language, you
+% can approximate this by performing a back-translation - first translate an English sentence
+% into a second language, then translate it back to English, and analyze the errors made in
+% this back-translation. Another example involves understanding the limitations of current
+% language models on specific tasks. For inspiration on tasks that remain challenging for even
+% the largest language models, see this paper: Bubeck et al. [2023].
+
+% Perform a brief literature survey on the topic of your chosen task, and find papers on this
+% task that have code available. Pick one of the papers and its associated codebase. Submit
+% a short report telling us: 1) the topic and task you picked; 2) the 3-5 papers you read,
+% including proper citations and a 3-5 sentence summary of each; and 3) a brief description of
+% the codebase you plan to use and the task it is designed to solve, as well as the dataset(s)
+% and evaluation metrics you plan to use to analyze the system
+
+\begin{document}
+
+\maketitle
+
+\section{Topic Introduction and Background}
+% * NLP in Speech Recognition (Issue with sarcasm)
+% * Sentiment Analysis (Issue with sarcasm; do we categorize as positive or negative?)
+% * Translation (Issue with slang) 
+% * https://arxiv.org/pdf/1609.08144v2
+% * https://paperswithcode.com/paper/attention-is-all-you-need
+% * https://arxiv.org/pdf/2205.03983
+% * https://github.com/google/sentencepiece
+% * https://paperswithcode.com/paper/googles-neural-machine-translation-system
+% * https://github.com/NVIDIA/DeepLearningExamples/tree/master/PyTorch/Translation/GNMT
+
+% TODO: Cut Parts Out
+This survey will primarily focus on the topic of machine translation (MT). Translation tools like Google Translate have been an integral part of our society for the past few decades. 
+% These tools have allowed us to easily overcome difficult language barriers to communicate or at the minimum understand the speech and texts from people speaking different languages. 
+Early translation tools have primarily been utilized to translate words and eventually simple phrases, but were still relatively inaccurate with more complex linguistics and sentences \cite{WANG2022143}. 
+% rather than complex everyday speech and sentences.
+% While translating these complex inputs are possible, these models suffered from being inaccurate and often had trouble interpreting and extraction high-level meaning at a larger scope.
+However, in 2016, Google pushed out their most notable update to their language translation platform to explore non-traditional methods for translating. This innovative change would revolutionize future approaches of machine translation models to allow translating more complex structures and meaning while achieving a relatively high accuracy.
+
+MT is typically categorized into either rule-based or corpus-based methods. Rule-based approaches utilized manual human writing to create the basic translation between two languages and typically required a physical dictionary for reference. While this approach was tedious, it was was the primary method for early translation tools due to its simplicity. The 1990s saw the initial proposal of statistical machine translation (SMT) models to allow for automatic translation; however, due to its complexity and reliance on large bilingual datasets it failed to gain any significant adaptations until 1999 with the development of the "Egypt" toolkit. \cite{WANG2022143}
+
+Phrase-based SMT methods were introduced in 2003 with "Pharaoh" and "Moses" as the primary innovators. Three years later, Google released their own phrase-based SMT translation tool, Google Translate. These milestones have shown a great improvement in the development of MT methods over the years and sparked further research to improve its quality. \cite{WANG2022143} 
+One drawback is that SMT is a basic statistical natural language model and is reliant on parallel corpora to facilitate translations. It uses n-grams to decide the probability of the input and output matching in meaning. Translations were produced based on tables containing the probabilities of pre-trained existing and unseen generated translations, ultimately making it susceptible to erroneous and nonsensical "literal" translations. Although systems were developed to weed out highly improbable translations, they were still observable in early translation models like Google Translate. \cite{SMTTCurriculum} This was a common issue with methods like SMT until neural machine translation (NMT) models were proposed in 2014.
+
+\section{Survey Task}
+This survey is specifically exploring the task of NMT methods, particularly Google's Neural Machine Translation (GNMT) system employed by the new version of Google Translate. NMT directly learns the input and associated output texts and typically utilize recurrent neural networks (RNN) \cite{SMTTCurriculum}. Attention is also utilized to help deal with longer phrasing and sentences, which traditional SMT models struggled with \cite{wu2016googles}. Google's research has already pointed out certain logistical issues such as training time, difficulty training with rare words, and failure to fully translate certain input sentences \cite{wu2016googles}. This survey aims to analyze GNMT's model and assess its performance to find additional limitations and propose possible solutions to them.
+
+\section{Relevant Papers}
+The first paper is Google's research and development of their own GNMT model \cite{wu2016googles}. This paper introduces the background behind their non-traditional NMT approach to solve common MT issues and comparisons with traditional SMT models. It dives into the sequence-to-sequence learning framework of their long short-term memory (LSTM) RNNs along with statistical explanations of their architectural design. The paper explains the functionality of each component-- encoder, connections, etc.-- along with details on their training and validation process. This paper will be the primary paper in this survey in evaluating the GNMT model and will serve as the sole reference to analyze and understand their GNMT code.
+
+The second paper is a progress overview of the development of MT models \cite{WANG2022143}. This paper will provide the historical progress of MT throughout the late 1900s to 2021. An overview is provided of early rule-based models and the development of more recent corpus-based models. The SMT model is briefly explored as a background to the revolutionary improvements NMT models introduced. The paper also provides a theoretical overview of the fundamentals of NMT and the importance of attention and RNNs in providing high accuracy and bilingual evaluation understudy (BLEU) scores. This paper will also help as a basis in considering possible limitations of the GNMT model not mentioned in Google's paper.
+
+The third paper is an educational paper on SMTs \cite{SMTTCurriculum}. This paper focuses on explaining the fundamentals of basic SMTs and its probabilistic language model. It introduces key elements of SMT like their translation and phrase tables and how traditional models built translations off them. The paper also dives into historically important automatic evaluation metrics (AEMs) such as BLEU as the primary method of evaluating MT model performances. 
+
+\section{Code and Proposition}
+The code that will be used for this survey is derived from a modified GNMT by Nvidia based on Google's GNMT \cite{github}. The codebase utilize pytorch
+
+\section{References}
+% https://www.sciencedirect.com/science/article/pii/S1877050916300710
+% https://arxiv.org/pdf/2205.03983
+% https://medium.com/analytics-vidhya/breaking-down-the-innovative-deep-learning-behind-google-translate-355889e104f1
+% https://paperswithcode.com/paper/googles-neural-machine-translation-system
+% \bibliographystyle{plain}
+\bibliographystyle{unsrt}
+\bibliography{references}
+\end{document}
