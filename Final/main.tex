@@ -1,0 +1,170 @@
+
+\documentclass[11pt,a4paper]{article}
+\usepackage[hyperref]{naaclhlt2019}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage{graphicx}
+\usepackage[normalem]{ulem}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{indentfirst}
+\usepackage{soul}
+
+\usepackage{url}
+
+\aclfinalcopy 
+
+
+\title{Analysis of RNN-Attention Machine Translation Methods}
+
+\author{Stephen Dong  \\
+  {\tt stdong@ucsd.edu} \\}
+  % Second Author \\
+  % {\tt email@domain} \\\And
+  % Third Author \\
+  % {\tt email@domain} \\\And
+  % Fourth Author \\
+  % {\tt email@domain} \\}
+  
+% \setlength\textwidth{16.0cm}
+\date{}
+
+\begin{document}
+\maketitle
+
+% \begin{abstract}
+% \end{abstract}
+
+ 
+% \section{Instructions}
+%   {\color{blue}
+%  \begin{itemize}
+%      \item \textit{Length: Should be at least \textbf{5 pages} but not more than 8 pages. {Do not include this template content in your final report as it messes up page count}. 
+%       Comment out everything in this document (except the headings when necessary)}
+          
+%      \item \textit{Submit (report, and optional code):  on Gradescope by \textbf{Friday, June 7, 2024}.}
+%  \end{itemize} 
+%  }
+
+\begin{abstract}
+    
+\end{abstract}
+
+\section{Introduction}
+% Original
+% This survey paper will focus on the analysis of neural machine translation (NMT). Machine Translation (MT) is a powerful automation tool to bridge the gap between languages by providing end-to-end translation between two languages. Translation tools like Google Translate have been an integral part of our society for the past few decades. Early MT tools have primarily been utilized to translate words and eventually simple phrases, but were still relatively inaccurate with more complex linguistics and sentences \cite{WANG2022143}. 
+
+% Early MT approaches relied on rule-based methods; however, these approaches were tedious as they required manual translation from a dictionary. The 1990s saw the initial proposal of corpus-based statistical machine translation (SMT) models. Phrase-based SMT methods were later introduced in 2003 with "Pharaoh" and "Moses" as the primary innovations. \cite{WANG2022143} 
+
+% Simple SMTs remained the dominant implementation of MT models until Nal Kalchbrenner, et al. \cite{kalchbrenner-blunsom-2013-recurrent} proposed the first NMT model that used an encoder-decoder structure for end-to-end translation. The paper proposed the recurrent continuous translation model (RCTM), which uses a convolutional neural network (CNN) in the encoder and an inverted CNN followed by a recurrent neural network (RNN) for the decoder. 
+
+% Following this proposal, KyungHyun Cho et al. reveals an alternative approach similar to Kalchbrenner's RCTM model that also incorporates the RNN into the encoder \cite{cho2014learning}. The paper also proposes the use of a long-short term (LSTM) hidden unit as a "reset gate" to solve issues with retaining distant \textit{relevant} information in longer sentences, allowing for higher BLEU scores as shown in Figure 1.
+
+% Proofread
+This survey paper will focus on the analysis of neural machine translation (NMT). Machine Translation (MT) is a powerful automation tool to bridge the gap between languages by providing end-to-end translation between two languages. Translation tools like Google Translate have been an integral part of our society for the past few decades. Early MT tools primarily translated words and eventually simple phrases but were still relatively inaccurate with more complex linguistics and sentences \cite{WANG2022143}.
+
+Early MT approaches relied on rule-based methods; however, these approaches were tedious as they required manual translation from a dictionary. The 1990s saw the initial proposal of corpus-based statistical machine translation (SMT) models. Phrase-based SMT methods were later introduced in 2003 with "Pharaoh" and "Moses" as the primary innovations. \cite{WANG2022143}
+
+SMTs remained the dominant implementation of MT models until Nal Kalchbrenner, et al. \cite{kalchbrenner-blunsom-2013-recurrent} proposed the an NMT model that used an encoder-decoder structure for end-to-end translation. The paper proposed the recurrent continuous translation model (RCTM), which uses a convolutional neural network (CNN) in the encoder and an inverted CNN followed by a recurrent neural network (RNN) for the decoder.
+
+Following this proposal, KyungHyun Cho et al. revealed an alternative approach similar to Kalchbrenner's RCTM model that also incorporates the RNN into the encoder \cite{cho2014learning}. The paper also proposes the use of a long-short term (LSTM) hidden unit as a "reset gate". This gate would drop solve issues with retaining distant \textit{relevant} information in longer sentences, allowing for higher BLEU scores as shown in Figure 1.
+
+\begin{figure}[h]
+    \centering
+    % \includegraphics[width=0.475\linewidth]{figures/LM_Default_Dropout/LM_Loss_Dropout.png}
+    % \includegraphics[width=0.475\linewidth]{figures/LM_Default_Dropout/LM_Per_Dropout.png}
+    \begin{tabular}{| l || c |}
+    \hline
+    Model & BLEU Test\\
+    \hline
+    \hline
+    RCTM I + WP & 21.5\\
+    RCTM II + WP & 21.7\\
+    \hline
+    RNN & 33.87\\
+    CSLM + RNN & 34.64\\
+    CSLM + RNN + WP & 34.54\\
+    \hline
+    \end{tabular}
+    \caption{Side-by-side BLEU test results comparison of RCTMs \cite{kalchbrenner-blunsom-2013-recurrent} with word penalty (WP) and RNN and LSTM based encoder-decoder and semantic retention models with and without WP \cite{cho2014learning}}
+\end{figure}
+
+The models presented in both papers served as the backbone of future NMT models. The following years introduced the use of attention in MT models, with Google pushing out their state of the art GNMT model for Google Translate \cite{wu2016googles}. The same year, Dzmitry Bahdanau et al. published their paper \textit{Neural Machine Translation By Jointly Leasrning to Align and Translate} \cite{bahdanau2016neural} that builds on the LSTM reset gate encoder-decoder model proposed by Cho. 
+
+% \textbf{Task and Model Summary}: Briefly summarize the NLP \textbf{problem or task} chosen and explain its importance. Specify the \textbf{model or system} selected, including references to the paper and the source code. (It is fine if  your task is different from the one in your proposal.)
+
+% \noindent \textbf{Approach and Findings Summary}: Describe the approach taken for analyzing the system. Summarize the main limitations identified during the analysis.
+
+
+
+\section{Your Dataset}
+The most important rule of NLP: look at your data! Describe the datasets used for analysis, including any preprocessing steps. This can be existing datasets used in the original paper, or it can be your own adversarial examples meant to stress test the system or it can be any benchmark datasests  such as those found on Huggingface datasets.
+
+Explain what properties of the data make it  challenging. Report  basic statistics (e.g., size, number of words/sentences/documents) and some other statistics that are specifically relevant to your task. Show a couple input / output pairs to make it clear what you're doing (but don't use up too much space in doing so.).
+
+\section{Analysis Approach}
+ Explain the methods used to analyze the system. Tell us any interesting aspects about your approach.  This section can be pretty straightforward. However,  you are encouraged to explore systematic diagnostic methods if you feel inspired.  
+
+\section{Errors and their Categorization}
+Present the errors found during the analysis, supported by specific examples. Categorize the types of errors encountered (e.g., syntactic errors, semantic misunderstandings, context misinterpretations, etc) and discuss their frequencies or conditions under which they appear.
+
+
+\section{Discussion}
+Discuss your reasons as to why  you think these errors occur, possibly drawing on literature in NLP.  If applicable, compare your findings with those discussed in the literature.
+
+
+\section{The way forward}
+How can the difficult cases you identified be addressed? Outline what changes in terms of data, models, algorithms, or evaluation metrics are necessary to resolve these issues. Develop a comprehensive plan for improving the system's performance.
+
+
+
+\section{Your Implementation (optional)}
+If you have time and are interested, you can try to implement some of the improvements you proposed. This is optional and will be graded as extra credit.
+
+Here is a  list of things to include under this section.
+\begin{itemize}
+     \item  (CONCEPTUAL APPROACH) What parts of your proposed "way forward" did you implement.
+    \item  (WORKING IMPLEMENTATION) Did you manage to complete a working implementation?
+   \item  (IMPLEMENTATION) \textbf{What models did you implement yourself, and what files in your submitted code are associated with these models?} (there will be a code submission link)
+
+   \item (RUNTIME) How long did it take to train your model?
+
+   \item  (RESULTS) What results did your model achieve, and how do these results compare to the performance of the original paper,. Your original paper is the baseline.
+   \item (OTHER): There could be many other important details specific to your approach that you should include here if appropriate. 
+\end{itemize}
+
+
+\section{Conclusion}
+Recap the major findings  from the analysis.
+State the implications of the implications of your findings.
+
+
+\section{Acknowledgements}
+ChatGPT was used for these sections:
+\begin{itemize}
+\item \textbf{Introduction} section for proofreading. These changes were adapted from the tool: (1) "MT tools \st{have primarily been utilized to translate}" $\rightarrow$ "MT tools \textit{primarily translated}", (2) "KyungHyun Cho et al. reveal\st{s}" $\rightarrow$ "KyungHyun Cho et al. reveal\textit{ed}"
+\end{itemize}
+
+% Generative AI tools such as ChatGPT, Bard, DALL-E,  Stable Diffusion,  and Copilot  have applications that help student learning and understanding, however, these tools can also be used in ways that bypass key learning objectives.
+
+% For this reason, using generative AI tools to substantially complete your report  is not permitted (i.e. you can't just have ChatGPT write your entire report for you).
+% You are allowed to use these tools as general-purpose assistants such as proof-readers, etc. When you use these tools, please disclose relevant use-cases in your report and specify in this section:
+% \begin{itemize}
+% \item  The degree to which you changed the outputs of the tool (no changes, minor changes, or major changes)
+% \end{itemize}
+
+
+\bibliographystyle{apalike}
+\footnotesize
+\bibliography{references}
+
+
+
+\end{document}
