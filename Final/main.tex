@@ -53,28 +53,32 @@
 %  \end{itemize} 
 %  }
 
-\begin{abstract}
-    
-\end{abstract}
-
 \section{Introduction}
-% Original
+% Original before both GPT proofread (this also includes any personal changes to information that might've been included after proofreaing that was not passed into GPT)
 % This survey paper will focus on the analysis of neural machine translation (NMT). Machine Translation (MT) is a powerful automation tool to bridge the gap between languages by providing end-to-end translation between two languages. Translation tools like Google Translate have been an integral part of our society for the past few decades. Early MT tools have primarily been utilized to translate words and eventually simple phrases, but were still relatively inaccurate with more complex linguistics and sentences \cite{WANG2022143}. 
 
 % Early MT approaches relied on rule-based methods; however, these approaches were tedious as they required manual translation from a dictionary. The 1990s saw the initial proposal of corpus-based statistical machine translation (SMT) models. Phrase-based SMT methods were later introduced in 2003 with "Pharaoh" and "Moses" as the primary innovations. \cite{WANG2022143} 
 
 % Simple SMTs remained the dominant implementation of MT models until Nal Kalchbrenner, et al. \cite{kalchbrenner-blunsom-2013-recurrent} proposed the first NMT model that used an encoder-decoder structure for end-to-end translation. The paper proposed the recurrent continuous translation model (RCTM), which uses a convolutional neural network (CNN) in the encoder and an inverted CNN followed by a recurrent neural network (RNN) for the decoder. 
 
-% Following this proposal, KyungHyun Cho et al. reveals an alternative approach similar to Kalchbrenner's RCTM model that also incorporates the RNN into the encoder \cite{cho2014learning}. The paper also proposes the use of a long-short term (LSTM) hidden unit as a "reset gate" to solve issues with retaining distant \textit{relevant} information in longer sentences, allowing for higher BLEU scores as shown in Figure 1.
+% Following this proposal, KyungHyun Cho et al. reveals a seperate alternative approach similar to Kalchbrenner's RCTM model that also incorporates the RNN into the encoder \cite{cho2014learning}. The paper also proposed a variation of the long-short term memory (LSTM) hidden unit, later denoted as a gated recurrent unit (GRU), to solve issues with retaining distant relevant information in longer sentences, allowing for higher BLEU scores as shown in Figure 1.
 
-% Proofread
+% The proposed GRU contains two primary gates: reset and update, shown in Figure 2. The update gate controls what new information from the new hidden state should be included in the hidden state. Meanwhile, the reset gate drops any information that displays signs of irrelevancy. These gates allow the unit to mimic long-term and short-term memory, i.e. long-term memory has more update gate activations and short-term memory with reset gates activations. \cite{cho2014learning} These gates allow the GRU to capture information in more meaningfully ways to boost performance.
+
+% The models presented in both papers served as the backbone of future NMT models. The following years introduced the use of attention in MT models, with Google pushing out their state-of-the-art GNMT model for Google Translate \cite{wu2016googles}. The same year, Dzmitry Bahdanau et al. published their paper Neural Machine Translation By Jointly Learning to Align and Translate \cite{bahdanau2016neural}, which adds an attention mechanism to the GRU encoder-decoder model proposed by Cho.
+
+% This survey will explore the attention-based RNN encoder-decoder model presented by Bahdanau et al. \cite{bahdanau2016neural}. This approach adds an attention mechanism in the decoder and converts the uni-directional encoder into a bi-directional RNN to extract and retain information behind and in front of each token. The paper suggests the model is capable of achieving an increased BLEU score of any long sentence translations.
+
+% This paper will demonstrate the continued limitations of the attention RNN encoder-decoder model with {longer and more complex} sentence structures. The codebase used for this survey is a smaller scaled tutorial implementation of the PyTorch seq2seq module \cite{github}. This codebase was also chosen for its accurate reflection of the model presented by the paper, but scaled down for hardware limitations. Results presented in this survey will be analyzed with this consideration. The BLEU scores of both the model's translation capabilities on a larger dataset and a dataset containing longer and more complex sentences are analyzed. These results are compared against the results of the original attention RNN encoder-decoder paper \cite{bahdanau2016neural} and Cho's paper \cite{cho2014learning}, which served as the baseline.
+
+% After GPT Proofread
 This survey paper will focus on the analysis of neural machine translation (NMT). Machine Translation (MT) is a powerful automation tool to bridge the gap between languages by providing end-to-end translation between two languages. Translation tools like Google Translate have been an integral part of our society for the past few decades. Early MT tools primarily translated words and eventually simple phrases but were still relatively inaccurate with more complex linguistics and sentences \cite{WANG2022143}.
 
 Early MT approaches relied on rule-based methods; however, these approaches were tedious as they required manual translation from a dictionary. The 1990s saw the initial proposal of corpus-based statistical machine translation (SMT) models. Phrase-based SMT methods were later introduced in 2003 with "Pharaoh" and "Moses" as the primary innovations. \cite{WANG2022143}
 
 SMTs remained the dominant implementation of MT models until Nal Kalchbrenner, et al. \cite{kalchbrenner-blunsom-2013-recurrent} proposed the an NMT model that used an encoder-decoder structure for end-to-end translation. The paper proposed the recurrent continuous translation model (RCTM), which uses a convolutional neural network (CNN) in the encoder and an inverted CNN followed by a recurrent neural network (RNN) for the decoder.
 
-Following this proposal, KyungHyun Cho et al. revealed an alternative approach similar to Kalchbrenner's RCTM model that also incorporates the RNN into the encoder \cite{cho2014learning}. The paper also proposes the use of a long-short term (LSTM) hidden unit as a "reset gate". This gate would drop solve issues with retaining distant \textit{relevant} information in longer sentences, allowing for higher BLEU scores as shown in Figure 1.
+Following this proposal, KyungHyun Cho et al. revealed a separate alternative approach similar to Kalchbrenner's RCTM model that also incorporates the RNN into the encoder \cite{cho2014learning}. The paper also proposed a variation of the long-short term memory (LSTM) hidden unit, later denoted as a gated recurrent unit (GRU), to solve issues with retaining distant relevant information in longer sentences, allowing for higher BLEU scores as shown in Figure 1.
 
 \begin{figure}[h]
     \centering
@@ -96,18 +100,42 @@ Following this proposal, KyungHyun Cho et al. revealed an alternative approach s
     \caption{Side-by-side BLEU test results comparison of RCTMs \cite{kalchbrenner-blunsom-2013-recurrent} with word penalty (WP) and RNN and LSTM based encoder-decoder and semantic retention models with and without WP \cite{cho2014learning}}
 \end{figure}
 
-The models presented in both papers served as the backbone of future NMT models. The following years introduced the use of attention in MT models, with Google pushing out their state of the art GNMT model for Google Translate \cite{wu2016googles}. The same year, Dzmitry Bahdanau et al. published their paper \textit{Neural Machine Translation By Jointly Leasrning to Align and Translate} \cite{bahdanau2016neural} that builds on the LSTM reset gate encoder-decoder model proposed by Cho. 
+The proposed GRU contains two primary gates: reset and update, shown in Figure 2. The update gate controls what new information from the new hidden state should be included in the hidden state. Meanwhile, the reset gate drops any information that displays signs of irrelevancy. These gates allow the unit to mimic long-term and short-term memory, i.e. long-term memory has more update gate activations and short-term memory with reset gates activations. \cite{cho2014learning} These gates allow the GRU to capture information in more meaningfully ways to boost performance.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[]{figs/GRU_hidden_cell.png}
+    \caption{GRU illustration from Cho et al.'s paper \cite{cho2014learning} with $z$ as the update gate, $r$ as the reset gate, $h$ as the current hidden state, and $\widetilde{h}$ as the new hidden state with new $x$ information.} 
+\end{figure}
+
+The models presented in both papers served as the backbone of future NMT models. The following years introduced the use of attention in MT models, with Google pushing out their state-of-the-art GNMT model for Google Translate \cite{wu2016googles}. The same year, Dzmitry Bahdanau et al. published their paper \textit{Neural Machine Translation By Jointly Learning to Align and Translate} \cite{bahdanau2016neural}, which adds an attention mechanism to the GRU encoder-decoder model proposed by Cho.
+
+This survey will explore the attention-based RNN encoder-decoder model presented by Bahdanau et al. \cite{bahdanau2016neural}. This approach adds an attention mechanism in the decoder and converts the unidirectional encoder into a bidirectional RNN to extract and retain information behind and in front of each token. The paper suggests the model is capable of achieving an increased BLEU score of any long sentence translations. 
+
+This paper will demonstrate the continued limitations of the attention RNN encoder-decoder model with {longer and more complex} sentence structures. The codebase used for this survey is a smaller scaled tutorial implementation of the PyTorch seq2seq module \cite{github}. This codebase was also chosen for its accurate reflection of the model presented by the paper, but scaled down for hardware limitations. Results presented in this survey will be analyzed with this consideration. The BLEU scores of both the model's translation capabilities on a larger dataset and a dataset containing longer and more complex sentences are analyzed. These results are compared against the results of the original attention RNN encoder-decoder paper \cite{bahdanau2016neural} and Cho's paper \cite{cho2014learning}, which served as the baseline.
 
 % \textbf{Task and Model Summary}: Briefly summarize the NLP \textbf{problem or task} chosen and explain its importance. Specify the \textbf{model or system} selected, including references to the paper and the source code. (It is fine if  your task is different from the one in your proposal.)
 
 % \noindent \textbf{Approach and Findings Summary}: Describe the approach taken for analyzing the system. Summarize the main limitations identified during the analysis.
 
 
+\section{The Dataset and Model}
+\subsection{Training}
+The original dataset \cite{elliott-EtAl:2016:VL16} provided by the codebase is used to train a model for German-English translations. The dataset contains a much smaller set of approximately 32K sentence translations of approximately 400K words compared to the approximately 348M words of the original paper \cite{bahdanau2016neural}. 20,518,405 parameters are learnable during training and is validated on 1,014 en-de translations. 1,000 en-de translations are used to test the capabilities of the model. All preprocessing and model implementations will be the default provided by the codebase.
 
-\section{Your Dataset}
-The most important rule of NLP: look at your data! Describe the datasets used for analysis, including any preprocessing steps. This can be existing datasets used in the original paper, or it can be your own adversarial examples meant to stress test the system or it can be any benchmark datasests  such as those found on Huggingface datasets.
+This dataset is loaded in from Huggingface\footnote{https://huggingface.co/datasets/bentrevett/multi30k} into a \verb|Dataset| from Huggingface's datasets module. Each sentence is tokenized and \verb|<sos>| and \verb|<eos>| tokens are prepended and appended to each sentence, respectively. The vocabulary for both German and English is built using the training data. Words that only occur once are filtered out as no meaningful information can be obtained from them besides the sentences they appeared in. The indices of each token in respect to the vocabulary is generated for the training, validation, and testing data. Given that the data is in \verb|Dataset| objects, each data must also be formatted for PyTorch. 
 
-Explain what properties of the data make it  challenging. Report  basic statistics (e.g., size, number of words/sentences/documents) and some other statistics that are specifically relevant to your task. Show a couple input / output pairs to make it clear what you're doing (but don't use up too much space in doing so.).
+Both the encoder and decoder have an embedding dimension of $256$ and a hidden dimension of $512$ in substitution of the 620 embedding dimensionality and 1000 hidden units suggested by original paper. The encoder and decoder uses the GRU module in PyTorch\footnote{https://pytorch.org/docs/stable/generated/torch.nn.GRU.html}. Note that \verb|tanh| is used as the activation function as suggested by the paper. A dropout of $p=0.5$ is also applied to both the encoder and decoder to serve as regularization for only this codebase. 
+
+A batch size of $128$ is used to collate and form the dataloaders to train, evaluate, and test the model. The weights are initialized with Gaussian normal values\footnote{https://pytorch.org/docs/stable/nn.init.html} and adjusted with the Cross-Entropy loss function during training. The model will be trained for 10 epochs using the \verb|Adam| optimizer with default PyTorch parameters\footnote{https://pytorch.org/docs/stable/generated/torch.optim.Adam.html} ($lr=0.001, \beta_1=0.9, \beta_2=0.999, \epsilon=1e-8$).
+
+\subsection{Large Test Dataset}
+The \textit{wmt\_t2t} dataset \cite{bojar-EtAl:2014:W14-33} will be used to test the model against current larger corpus databases. A stress test dataset will be used to analyze the models capability in translating a range of sentence lengths and complexity. Sentence complexity will be categorize into four buckets depending on sentence lengths and the average BLEU score of these categories are computed and analyzed.
+
+
+% The most important rule of NLP: look at your data! Describe the datasets used for analysis, including any preprocessing steps. This can be existing datasets used in the original paper, or it can be your own adversarial examples meant to stress test the system or it can be any benchmark datasests  such as those found on Huggingface datasets.
+
+% Explain what properties of the data make it  challenging. Report  basic statistics (e.g., size, number of words/sentences/documents) and some other statistics that are specifically relevant to your task. Show a couple input / output pairs to make it clear what you're doing (but don't use up too much space in doing so.).
 
 \section{Analysis Approach}
  Explain the methods used to analyze the system. Tell us any interesting aspects about your approach.  This section can be pretty straightforward. However,  you are encouraged to explore systematic diagnostic methods if you feel inspired.  
@@ -147,9 +175,14 @@ State the implications of the implications of your findings.
 
 
 \section{Acknowledgements}
-ChatGPT was used for these sections:
+ChatGPT was used for the following areas:
 \begin{itemize}
-\item \textbf{Introduction} section for proofreading. These changes were adapted from the tool: (1) "MT tools \st{have primarily been utilized to translate}" $\rightarrow$ "MT tools \textit{primarily translated}", (2) "KyungHyun Cho et al. reveal\st{s}" $\rightarrow$ "KyungHyun Cho et al. reveal\textit{ed}"
+\item \textbf{Introduction} section for proofreading. These changes were adapted from the tool: (1) "MT tools \st{have primarily been utilized to translate}" $\rightarrow$ "MT tools \textit{primarily translated}", (2) "KyungHyun Cho et al. reveal\st{s}" $\rightarrow$ "KyungHyun Cho et al. reveal\textit{ed}", (3) italicization of the title for Bahdanau's paper, and (4) punctuation.
+\end{itemize}
+
+These resources were used to help understand some of the papers referenced in this survey:
+\begin{itemize}
+    \item Understanding GRU Networks from Medium \cite{Kostadinov_2019}
 \end{itemize}
 
 % Generative AI tools such as ChatGPT, Bard, DALL-E,  Stable Diffusion,  and Copilot  have applications that help student learning and understanding, however, these tools can also be used in ways that bypass key learning objectives.
